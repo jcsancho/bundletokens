@@ -1,20 +1,21 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 
 contract BundleTokens {
 
+uint constant maxowners=100;
+uint constant maxbundles=100;
+uint constant maxsubscribers=1000;
+
+//Emergency stop
+bool isStopped = false;
+
 address token1addr;
 address token2addr;
 
-uint storedData;
-uint bonus;
 uint bundleCount;
-
-// test
-uint  test1;
 uint userId;
-address test2;
 
 // Number of bundles
 uint countBundles;
@@ -68,39 +69,45 @@ struct Bundle {
 }
 
 // bundles
-mapping (uint => Bundle) bundles;
+Bundle[maxowners] bundles;
 
 // bundle owners
-mapping  (uint => Owners) owners;
+Owners[maxowners] owners;
 
 // bundle subscribers
-mapping  (uint => Subscribers) subscribers;
+Subscribers[maxsubscribers] subscribers;
 
 constructor() public {
        countOwners=0;
        countSubscribers=0;
        countBundles=0; 
        admin=msg.sender;
-       storedData=0;
-       bonus=0;
 }
 
 // Modifiers
-modifier verifyAdmin () { require (msg.sender == admin); _;}
 
-function setStorage(uint x)
-    public
-{
-    storedData = x;
-}
+modifier verifyAdmin {
+    require (msg.sender == admin);
+     _;
+     }
 
-function getStorage()
+modifier stoppedInEmergency {
+        require(!isStopped);
+        _;
+    }
+
+function stopContract()
     public
-    view
-    returns (uint)
-{
-    return storedData;
-}
+    verifyAdmin  {
+        isStopped = true;
+    }
+
+function resumeContract()
+    public
+    verifyAdmin {
+        isStopped = false;
+    }
+
 
 function getUser()
     public
@@ -129,24 +136,13 @@ function checkUser(uint x)
 }
 
 
-// Verify Admin
-function checkAdmin()
-    external 
-    view
-    returns (bool success)
-{
-  if (msg.sender == admin){
-    return true;
-  }else{
-    return false;  
-  }
-}
-
 // Register a bundler owner
 function registerOwner(address _owner) 
     public
-    verifyAdmin()
+    verifyAdmin
+    stoppedInEmergency
 {
+  require(countOwners >= 0 && countOwners < maxowners);
   owners[countOwners].state=ownerState.Registered;
   owners[countOwners].owner=_owner;
   countOwners=countOwners+1;
@@ -180,29 +176,14 @@ function checksender()
     return(msg.sender);
 }
 
-// check storage
-function writestorage(address _symbol)
-    public
-{
-    test2=_symbol;
-}
-
-// check storage
-function checkstorage()
-    view
-    public
-    returns (uint b)
-{
-    StandardToken token2 = StandardToken(test2);
-    b=token2.balanceOf(msg.sender);
-    return(b);
-}
-
 
 // Register bundle
 function registerBundle(uint _mintime, uint _bonus, uint _balance1, uint _balance2, address _token1, address _token2)
+    stoppedInEmergency
     public
+
 {
+    require(bundleCount >= 0 && bundleCount < maxbundles);
     bundles[bundleCount].time=_mintime;
     bundles[bundleCount].bonus=_bonus;
     bundles[bundleCount].balance1=_balance1;
@@ -219,6 +200,7 @@ function getBundleBonus(uint _bundleId)
     public
     returns (uint b)
 {
+    require ( _bundleId >= 0 && _bundleId < maxbundles);
     b=bundles[_bundleId].bonus;
     return b;
 }
@@ -228,6 +210,7 @@ function getBundleTime(uint _bundleId)
     public
     returns (uint b)
 {
+    require ( _bundleId >= 0 && _bundleId < maxbundles);
     b=bundles[_bundleId].time;
     return b;
 }
@@ -237,6 +220,7 @@ function getBundleBalance1(uint _bundleId)
     public
     returns (uint b)
 {
+    require ( _bundleId >= 0 && _bundleId < maxbundles);
     b=bundles[_bundleId].balance1;
     return b;
 }
@@ -246,6 +230,7 @@ function getBundleBalance2(uint _bundleId)
     public
     returns (uint b)
 {
+    require ( _bundleId >= 0 && _bundleId < maxbundles);
     b=bundles[_bundleId].balance2;
     return b;
 }
@@ -256,6 +241,7 @@ function checkBundleOwner(uint _bundleId)
     public
     returns (address b)
 {
+    require ( _bundleId >= 0 && _bundleId < maxbundles);
     b=bundles[_bundleId].owner;
     return(b);
 }
@@ -276,20 +262,25 @@ function checkBalance(uint _bundleid)
     view
     returns(uint balance1)
 {
+    require ( _bundleid >= 0 && _bundleid < maxbundles);
     StandardToken token1 = StandardToken(bundles[_bundleid].token1);
-    balance1=token1.balanceOf(msg.sender);
+    balance1=token1.balanceOf(msg.sender); // untrusted external call
     return (balance1);
 }
 
 
 // register subscriber to bundle
 function registerSubscriber(uint _bundleid)
+    stoppedInEmergency
     public
 {
+    require ( _bundleid >= 0 && _bundleid < maxbundles);
+    require ( countSubscribers >= 0 && countSubscribers < maxsubscribers);
+
     StandardToken token1 = StandardToken(bundles[_bundleid].token1);
     StandardToken token2 = StandardToken(bundles[_bundleid].token2);
-    uint balance1=token1.balanceOf(msg.sender);
-    uint balance2=token2.balanceOf(msg.sender);
+    uint balance1=token1.balanceOf(msg.sender); // untrusted external call
+    uint balance2=token2.balanceOf(msg.sender); // untrusted external call
 
    if (balance1>=bundles[_bundleid].balance1)
      {
@@ -316,14 +307,17 @@ function getSubscriberCount(uint _bundleId)
     view
     returns(uint)
 {
+    require ( _bundleId >= 0 && _bundleId < maxbundles);
     return(bundles[_bundleId].count);
 }
 
 
 // Unregister Subscriber to bundle
 function unregisterSubscriber(uint _bundleId)
+    stoppedInEmergency
     public
 {
+    require ( _bundleId >= 0 && _bundleId < maxbundles);
     for (uint i = 0; i < countSubscribers; i++) {
         if (subscribers[i].owner==msg.sender){
             if (subscribers[i].bundleId==_bundleId){
@@ -351,13 +345,15 @@ function unregisterSubscriber(uint _bundleId)
 
 // Subscriber Bundle Claim
 function subscriberClaim(uint _bundleId)
-    external
+    stoppedInEmergency
+    public
     //verifySubscriber (msg.sender,_bundleId)
 {
+    require ( _bundleId >= 0 && _bundleId <= maxbundles);
     StandardToken token1 = StandardToken(bundles[_bundleId].token1);
     StandardToken token2 = StandardToken(bundles[_bundleId].token2);
-    uint balance1=token1.balanceOf(msg.sender);
-    uint balance2=token2.balanceOf(msg.sender);
+    uint balance1=token1.balanceOf(msg.sender); // untrusted external call
+    uint balance2=token2.balanceOf(msg.sender); // untrusted external call
 
     for (uint i = 0; i < countSubscribers; i++) {
                 if (subscribers[i].owner==msg.sender){

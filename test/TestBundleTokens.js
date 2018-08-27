@@ -23,11 +23,6 @@ contract('TestBundleTokens', async (accounts) =>{
         let token2 = await BundleToken2.deployed();
         let bundletokens = await BundleTokens.deployed();
 
-
-        //await token1.transfer(bundleowner,100,{from:admin});
-        //await token2.transfer(bundleowner,100,{from:admin});
-        //await token1.transfer(subscriber,100,{from:admin});
-        //await token2.transfer(subscriber,100,{from:admin});
         let ownertoken1 = await token1.balanceOf(bundleowner);
         let ownertoken2 = await token2.balanceOf(bundleowner);
         let subscribertoken1 = await token1.balanceOf(subscriber);
@@ -80,7 +75,7 @@ contract('TestBundleTokens', async (accounts) =>{
         let bonus1=await bundletokens.getBundleBonus.call(bundleId);
         let time1=await bundletokens.getBundleTime.call(bundleId);
         let balance1=await bundletokens.getBundleBalance1.call(bundleId);
-        console.log("bundles:",bundleId,"bonus:",bonus1.toNumber(),"time:",time1.toNumber(),"balance1",balance1.toNumber());
+        //console.log("bundles:",bundleId,"bonus:",bonus1.toNumber(),"time:",time1.toNumber(),"balance1",balance1.toNumber());
         assert.equal(nbundles.toNumber(), 1, 'Bundle has been created successfully');
     });
 
