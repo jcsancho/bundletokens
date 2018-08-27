@@ -2,9 +2,20 @@
 
 Description
 -----------
-There is a central page where you can see a list of bundles that shows the requirements to get the tokens. In order to get bonuses, basically, you need to hold for a minimum time two or more some specific tokens. Bonuses are paid by one of the tokens required to bundle. You can see also the minimum time required on each bundle and which tokens you need to hold. 
-The central page is managed by administrators showing them admin only functions, such as managing bundle owners. An admin adds an address to the list of approved bundle owners, so if the owner of that address logs into the app, they have access to the bundle own functions. Bundle owners creates bundles. Bundle owners can manage their bundles. People can visit bundles and claim their bonuses. In order to successfully claim the bonus you need to register first your ETH address for the bundle that you are interested. Only one bonus is allowed per each bundle and ETH address. 
-
+It is an DApp that allows you to get bonuses for holding several ERC20 tokens
+together for a certain amount of time, we call this a bundle.
+There is a central page where you can see a list of bundles that shows the requirements
+to get the tokens. In order to get bonuses, basically, you need to hold for a minimum time
+two or more some specific tokens. Bonuses are paid by one of the tokens required to
+bundle. You can see also the minimum time required on each bundle and which tokens
+you need to hold.
+The central page is managed by administrators showing them admin only functions, such
+as managing bundle owners. An admin adds an address to the list of approved bundle
+owners, so if the owner of that address logs into the app, they have access to the bundle
+own functions. Bundle owners creates bundles. Bundle owners can manage their
+bundles. People can visit bundles and claim their bonuses. In order to successfully claim
+the bonus you need to register first your ETH address for the bundle that you are
+interested. Only one bonus is allowed per each bundle and ETH address.
 
 Considerations
 -------------
