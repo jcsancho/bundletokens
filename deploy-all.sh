@@ -6,7 +6,6 @@ truffle compile
 truffle migrate > contracts.txt
 token1=`cat contracts.txt | grep BundleToken1: | awk '{print $2}'`
 token2=`cat contracts.txt | grep BundleToken2: | awk '{print $2}'`
-rm contracts.txt 
 
 echo $token1 > token1.js 
 echo $token2 > token2.js 

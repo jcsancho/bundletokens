@@ -1,6 +1,8 @@
 pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
+import "contracts/BundleToken1.sol";
+import "contracts/BundleToken2.sol";
 
 contract BundleTokens {
 
@@ -13,6 +15,10 @@ bool isStopped = false;
 
 address token1addr;
 address token2addr;
+
+address tokencontractaddr;
+
+uint signed;
 
 uint bundleCount;
 uint userId;
@@ -27,7 +33,7 @@ uint countOwners;
 uint countSubscribers;
 
 //webapp administrator
-address private admin;
+address admin;
 
 // Bundle state
 enum bundleState {Active, Close, MissingFunds}
@@ -96,6 +102,12 @@ modifier stoppedInEmergency {
         _;
     }
 
+function setAddr(address addr)
+  public
+  {
+          tokencontractaddr=addr;
+  }
+
 function stopContract()
     public
     verifyAdmin  {
@@ -108,13 +120,20 @@ function resumeContract()
         isStopped = false;
     }
 
-
 function getUser()
     public
     view
     returns(uint user)
 {
     return userId;
+}
+
+function getSigned(uint u)
+    public
+    returns(uint)
+{
+  signed=u;
+  return signed;
 }
 
 // Check User
@@ -135,7 +154,6 @@ function checkUser(uint x)
   return userId;
 }
 
-
 // Register a bundler owner
 function registerOwner(address _owner) 
     public
@@ -148,9 +166,7 @@ function registerOwner(address _owner)
   countOwners=countOwners+1;
 }
 
-
 // Verify Owner
-
 function checkOwner()
     view
     public
@@ -167,6 +183,33 @@ function checkOwner()
   return success;
 }
 
+function getName1(uint _bundleId)
+    public
+    view
+    returns(uint name)
+{
+    require ( _bundleId >= 0 && _bundleId < maxbundles);
+   // address addr=bundles[_bundleId].token1;
+   // BundleToken1 tokencontract = BundleToken1(addr);
+   // name=tokencontract.getName();
+    //name=bytes32(0x4554480000000000000000000000000000000000000000000000000000000000);
+    name=5;
+    return(name);
+}
+
+function getName2(uint _bundleId)
+    public
+    view
+    returns(string name)
+{
+    require ( _bundleId >= 0 && _bundleId < maxbundles);
+    address addr=bundles[_bundleId].token2;
+    BundleToken2 tokencontract = BundleToken2(addr);
+    name=tokencontract.getName();
+    return(name);
+}
+
+
 // check sender bundle
 function checksender()
     view
@@ -181,7 +224,6 @@ function checksender()
 function registerBundle(uint _mintime, uint _bonus, uint _balance1, uint _balance2, address _token1, address _token2)
     stoppedInEmergency
     public
-
 {
     require(bundleCount >= 0 && bundleCount < maxbundles);
     bundles[bundleCount].time=_mintime;
@@ -194,6 +236,7 @@ function registerBundle(uint _mintime, uint _bonus, uint _balance1, uint _balanc
     bundles[bundleCount].owner=msg.sender;
     bundleCount=bundleCount+1;
 }
+
 
 function getBundleBonus(uint _bundleId)
     view
@@ -246,7 +289,6 @@ function checkBundleOwner(uint _bundleId)
     return(b);
 }
 
-
 // Get number of bundles
   function getBundleCount()
     public
@@ -257,17 +299,45 @@ function checkBundleOwner(uint _bundleId)
 }
 
 // check balance of tokens
-function checkBalance(uint _bundleid)
+function getBalance(address _token)
     public
     view
-    returns(uint balance1)
+    returns(uint balance)
 {
-    require ( _bundleid >= 0 && _bundleid < maxbundles);
-    StandardToken token1 = StandardToken(bundles[_bundleid].token1);
-    balance1=token1.balanceOf(msg.sender); // untrusted external call
-    return (balance1);
+    StandardToken tokencontract = StandardToken(_token);
+    balance=tokencontract.balanceOf(msg.sender); // untrusted external call
+    return (balance);
 }
 
+// check balance of tokens
+function getBalanceContract(address _token)
+    public
+    view
+    returns(uint balance)
+{
+    StandardToken tokencontract = StandardToken(_token);
+    balance=tokencontract.balanceOf(address(this)); // untrusted external call
+    return (balance);
+}
+
+
+function depositToken1(uint _amount,uint _bundleid)
+    public
+    payable
+{
+
+    BundleToken1 tokencontract = BundleToken1(bundles[_bundleid].token1);
+    require(tokencontract.transferFrom(msg.sender,address(this),_amount));
+}
+
+function depositToken2(uint _amount,uint _bundleid)
+    public
+    payable
+{
+
+    BundleToken2 tokencontract = BundleToken2(bundles[_bundleid].token2);
+    require(tokencontract.transferFrom(msg.sender,address(this),_amount));
+}
 
 // register subscriber to bundle
 function registerSubscriber(uint _bundleid)
@@ -295,11 +365,9 @@ function registerSubscriber(uint _bundleid)
         subscribers[countSubscribers].owner= msg.sender;
         countSubscribers++;
         bundles[_bundleid].count++;
-
      }
-     }
+   }
 }
-
 
 // Get number of subscribers
 function getSubscriberCount(uint _bundleId)
@@ -310,7 +378,6 @@ function getSubscriberCount(uint _bundleId)
     require ( _bundleId >= 0 && _bundleId < maxbundles);
     return(bundles[_bundleId].count);
 }
-
 
 // Unregister Subscriber to bundle
 function unregisterSubscriber(uint _bundleId)
@@ -328,7 +395,7 @@ function unregisterSubscriber(uint _bundleId)
     }
 }
 
-// Get time from fist subscribed
+// Get time from first subscribed
   function getSubscriberTime()
     public
     view
@@ -354,18 +421,20 @@ function subscriberClaim(uint _bundleId)
     StandardToken token2 = StandardToken(bundles[_bundleId].token2);
     uint balance1=token1.balanceOf(msg.sender); // untrusted external call
     uint balance2=token2.balanceOf(msg.sender); // untrusted external call
-
     for (uint i = 0; i < countSubscribers; i++) {
                 if (subscribers[i].owner==msg.sender){
                     uint diff = (now - subscribers[i].time) ; // time in seconds
+                    uint bonus=bundles[_bundleId].bonus;
                     if (diff >= bundles[_bundleId].time){
                         if (balance1>=bundles[_bundleId].balance1)
                         {
                             if (balance2>=bundles[_bundleId].balance2){
+                                require(token1.transfer(msg.sender,bonus));
+                                require(token2.transfer(msg.sender,bonus));
                                 subscribers[i].state=subscriberState.Claimed;
                                 subscribers[i].bonus1=bundles[_bundleId].bonus;
                                 subscribers[i].bonus2=bundles[_bundleId].bonus;
-                            }
+                           }
                         }
                     }
                 }
