@@ -8,17 +8,17 @@ Compiling openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol...
 
 Compilation warnings encountered:
 
-/Users/jcsancho/Dropbox/smartcontracts/bundletokens/bundletokens/contracts/BundleToken1.sol:19:12: Warning: This looks like an address but has an invalid checksum. If this is not used as an address, please prepend '00'. Correct checksummed address: '0x171900af4429428934408771eC02C9F86020afe0'. For more information please see https://solidity.readthedocs.io/en/develop/types.html#address-literals
-  balances[0x171900af4429428934408771ec02c9f86020afe0]=INITIAL_SUPPLY;
+/Users/jcsancho/Dropbox/smartcontracts/bundletokens/bundletokens/contracts/BundleToken1.sol:19:12: Warning: This looks like an address but has an invalid checksum. If this is not used as an address, please prepend '00'. Correct checksummed address: '0x617DA8F6Cb818Cf6127198c281fCA49E939A3936'. For more information please see https://solidity.readthedocs.io/en/develop/types.html#address-literals
+  balances[0x617da8f6cb818cf6127198c281fca49e939a3936]=INITIAL_SUPPLY;
            ^----------------------------------------^
-,/Users/jcsancho/Dropbox/smartcontracts/bundletokens/bundletokens/contracts/BundleToken1.sol:20:12: Warning: This looks like an address but has an invalid checksum. If this is not used as an address, please prepend '00'. Correct checksummed address: '0x4D6163e55C8DA9A99a2198C4d30d2756Be65A885'. For more information please see https://solidity.readthedocs.io/en/develop/types.html#address-literals
-  balances[0x4d6163e55c8da9a99a2198c4d30d2756be65a885]=INITIAL_SUPPLY;
+,/Users/jcsancho/Dropbox/smartcontracts/bundletokens/bundletokens/contracts/BundleToken1.sol:20:12: Warning: This looks like an address but has an invalid checksum. If this is not used as an address, please prepend '00'. Correct checksummed address: '0x5d50985631b3A2be51d99208dc18617Fc4fc218B'. For more information please see https://solidity.readthedocs.io/en/develop/types.html#address-literals
+  balances[0x5d50985631b3a2be51d99208dc18617fc4fc218b]=INITIAL_SUPPLY;
            ^----------------------------------------^
-,/Users/jcsancho/Dropbox/smartcontracts/bundletokens/bundletokens/contracts/BundleToken2.sol:18:12: Warning: This looks like an address but has an invalid checksum. If this is not used as an address, please prepend '00'. Correct checksummed address: '0x171900af4429428934408771eC02C9F86020afe0'. For more information please see https://solidity.readthedocs.io/en/develop/types.html#address-literals
-  balances[0x171900af4429428934408771ec02c9f86020afe0]=INITIAL_SUPPLY;
-           ^----------------------------------------^
-,/Users/jcsancho/Dropbox/smartcontracts/bundletokens/bundletokens/contracts/BundleToken2.sol:19:12: Warning: This looks like an address but has an invalid checksum. If this is not used as an address, please prepend '00'. Correct checksummed address: '0x4D6163e55C8DA9A99a2198C4d30d2756Be65A885'. For more information please see https://solidity.readthedocs.io/en/develop/types.html#address-literals
-  balances[0x4d6163e55c8da9a99a2198c4d30d2756be65a885]=INITIAL_SUPPLY;
+,/Users/jcsancho/Dropbox/smartcontracts/bundletokens/bundletokens/contracts/BundleToken2.sol:18:11: Warning: This looks like an address but has an invalid checksum. If this is not used as an address, please prepend '00'. Correct checksummed address: '0x617DA8F6Cb818Cf6127198c281fCA49E939A3936'. For more information please see https://solidity.readthedocs.io/en/develop/types.html#address-literals
+ balances[0x617da8f6cb818cf6127198c281fca49e939a3936]=INITIAL_SUPPLY;
+          ^----------------------------------------^
+,/Users/jcsancho/Dropbox/smartcontracts/bundletokens/bundletokens/contracts/BundleToken2.sol:19:12: Warning: This looks like an address but has an invalid checksum. If this is not used as an address, please prepend '00'. Correct checksummed address: '0x5d50985631b3A2be51d99208dc18617Fc4fc218B'. For more information please see https://solidity.readthedocs.io/en/develop/types.html#address-literals
+  balances[0x5d50985631b3a2be51d99208dc18617fc4fc218b]=INITIAL_SUPPLY;
            ^----------------------------------------^
 
 Writing artifacts to ./build/contracts
@@ -27,29 +27,29 @@ Using network 'development'.
 
 Running migration: 1_initial_migration.js
   Deploying Migrations...
-  ... 0xb7891337b061a12d26ac7bf38c6cc847e2be1aac3013e0f78babd8932d171689
-  Migrations: 0xc1018bfd45d04db3a5ad8d40a0df53c96abf25f8
+  ... 0x69802960ba5d387ac6a9a573fb464a202db644f2c1c17d4499a3f2e82bd44721
+  Migrations: 0x5bb88f8381d8519863e4a2f72bf2febf6a38ac75
 Saving successful migration to network...
-  ... 0x6b3e2bb493134710cd08b89b707d06c04a522a7866901bdbe30d65d4d9b5a3c4
+  ... 0x678f74461b799da23d740af248d299f38c977b96b67d188cce8e3434ef3ccaa6
 Saving artifacts...
 Running migration: 2_deploy_contracts.js
   Deploying BundleToken1...
-  ... 0x6fa5115f26f6c726baf7bfb85d4507c30a84e25b96d3b0ad4f3be92c8a5d2900
-  BundleToken1: 0x5aa4691d816c1a9373d22d94c6d3e7f1f453b868
+  ... 0x9c384bf0e6e936692668c0f20b6f60e97133496faff3ec5a1f392e37f0793c73
+  BundleToken1: 0x8dfe4836c65018dc6e9ff9d628c2177ec49a67b4
 Saving successful migration to network...
-  ... 0x521287149d27ef8bef4c0c5dc81ef18064a37212038dc106f2aa6cbd7ac87df8
+  ... 0x08f86100d56c7b6a12ddaf280ba7218e5efa433b36dc4c39da649b025ce1e599
 Saving artifacts...
 Running migration: 3_deploy_contracts.js
   Deploying BundleToken2...
-  ... 0x1ec3a8b88ee33e719cb7e13f41fa2fd3a3ff58ed34df35954afc91dcf5164125
-  BundleToken2: 0xddbbb5b5148acca0256ba64cc771c7bc45cd7377
+  ... 0xa0b63660c35dc3b1d6df4248653d6515d6fdefdb70b5d11188eb7c9efa7a1a64
+  BundleToken2: 0x6ab82ae5389d5efccab895c004215d2b7c9fa105
 Saving successful migration to network...
-  ... 0x371c5f5a9022bb97bf2d7b248d783911fd3d1660092bcc2685885b0d9e795d18
+  ... 0x230950d62ee7a520cf283cd52db8a3c964c352b07f14bdd2503612d0f48360ac
 Saving artifacts...
 Running migration: 4_deploy_migrations.js
   Deploying BundleTokens...
-  ... 0x4f0a9a5c6749127098f0dcbd34ec6d41903c0d67b48eb555b6ab7e668d4416c8
-  BundleTokens: 0xce188a6aef0591972d66236fd8086cb38f890289
+  ... 0x5afb8ed574517d6929fb4f8d3015151c7b93b53790a06337b0f08024ce191bde
+  BundleTokens: 0x9c1235f0ee8544dae40b7726417012bb5a39dd3d
 Saving successful migration to network...
-  ... 0x8b0ea9a58c57ea722d0e55eea537d4a538cd89b34763de605f996d2abc02a958
+  ... 0x93eb03beefcc692e75d7a44d01b88c7901afbc3bb5d9447f1a50978bf8257702
 Saving artifacts...

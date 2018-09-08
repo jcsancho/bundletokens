@@ -107,7 +107,6 @@ class App extends Component {
               return this.setState({contracttoken2: bundleToken2Instance})
           })
       })
-
     }
 
     handleClickLogin(event){

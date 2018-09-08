@@ -18,11 +18,9 @@ contract('TestBundleTokens', async (accounts) =>{
         let subscriber = accounts[2];
         let contract1=accounts[3];
        // console.log(bundleowner);
-
         let token1 = await BundleToken1.deployed();
         let token2 = await BundleToken2.deployed();
         let bundletokens = await BundleTokens.deployed();
-
         let ownertoken1 = await token1.balanceOf(bundleowner);
         let ownertoken2 = await token2.balanceOf(bundleowner);
         let subscribertoken1 = await token1.balanceOf(subscriber);
@@ -35,9 +33,9 @@ contract('TestBundleTokens', async (accounts) =>{
         console.log("owner: ", name1, ownertoken1.toNumber(), name2, ownertoken2.toNumber());
         console.log("subscriber: ", name1, subscribertoken1.toNumber(), name2, subscribertoken2.toNumber());
 
-        assert.equal(admintoken1.toNumber(), 1000, 'Admin has Bundle tokens1');
-        assert.equal(ownertoken1.toNumber(), 1000, 'Owner has Bundle tokens1');
-        assert.equal(subscribertoken1.toNumber(), 1000, 'Subscriber has Bundle tokens1');
+        assert.equal(admintoken1.toNumber(), 1000000, 'Admin has Bundle tokens1');
+        assert.equal(ownertoken1.toNumber(), 1000000, 'Owner has Bundle tokens1');
+        assert.equal(subscribertoken1.toNumber(), 1000000, 'Subscriber has Bundle tokens1');
 
     });
 
@@ -46,21 +44,21 @@ contract('TestBundleTokens', async (accounts) =>{
         let admin = accounts[0];
         let bundleowner = accounts[1];
         let subscriber = accounts[2];
-
         let bundletokens = await BundleTokens.deployed();
         await bundletokens.registerOwner(bundleowner);
         let success= await bundletokens.checkOwner.call({from:bundleowner});
         assert.equal(success, true, 'Bundle owner has been registered successfully');
 
-  });
+    });
 
 
   it('Bundle Owner should create a bundle' , async () => {
         let admin = accounts[0];
         let bundleowner = accounts[1];
         let subscriber = accounts[2];
-
         let bundletokens = await BundleTokens.deployed();
+        let token1 = await BundleToken1.deployed();
+        let token2 = await BundleToken2.deployed();
         let  mintime=0;
         let  bonus=30;
         let  minbalance1=3;
@@ -69,12 +67,16 @@ contract('TestBundleTokens', async (accounts) =>{
         let token2symbol=token2Address;
         //let addr=await bundletokens.checksender.call(1,{from:admin});
       //console.log("sender: ", addr);
-        await bundletokens.registerBundle(mintime,bonus,minbalance1,minbalance2,token1Address,token2Address,{from:bundleowner});
+        await bundletokens.registerBundle(mintime,bonus,minbalance1,minbalance2,token1.address,token2.address,{from:bundleowner});
         let nbundles=await bundletokens.getBundleCount.call();
         let bundleId=nbundles.toNumber()-1;
         let bonus1=await bundletokens.getBundleBonus.call(bundleId);
         let time1=await bundletokens.getBundleTime.call(bundleId);
         let balance1=await bundletokens.getBundleBalance1.call(bundleId);
+        await token1.approve(bundletokens.address,100,{from:admin});
+        await token2.approve(bundletokens.address,100,{from:admin});
+        await bundletokens.depositToken1(100,bundleId,{from:admin});
+        await bundletokens.depositToken2(100,bundleId,{from:admin});
         //console.log("bundles:",bundleId,"bonus:",bonus1.toNumber(),"time:",time1.toNumber(),"balance1",balance1.toNumber());
         assert.equal(nbundles.toNumber(), 1, 'Bundle has been created successfully');
     });
@@ -101,23 +103,19 @@ contract('TestBundleTokens', async (accounts) =>{
         let  token2symbol=token2Address;
         let nbundles=await bundletokens.getBundleCount.call();
         let bundleId=nbundles.toNumber()-1;
-        let b1= await bundletokens.checkBalance(bundleId,{from:subscriber});
+        //let b1= await bundletokens.checkBalance(bundleId,{from:subscriber});
        // console.log("bundle Count:", nbundles.toNumber(), "balance:",b1.toNumber());
-
         await bundletokens.registerSubscriber(bundleId,{from:subscriber});
         let nsubscribers=await bundletokens.getSubscriberCount.call(bundleId);
         //console.log("nsubscriber",nsubscribers.toNumber(),bundleId);
         assert.equal(nsubscribers.toNumber(), 1, 'Subscriber has been registered successfully');
     });
 
-
-
     it('Subscriber should claim a boundle bonus after the required time', async () => {
         let admin = accounts[0];
         let bundleowner = accounts[1];
         let subscriber = accounts[2];
         let contractaddr=accounts[3];
-
         let bundletokens = await BundleTokens.deployed(contractaddr);
         let token1 = await BundleToken1.deployed();
         let token2 = await BundleToken2.deployed();
@@ -128,12 +126,14 @@ contract('TestBundleTokens', async (accounts) =>{
         let  minbalance1=10;
         let  minbalance2=10;
         let nbundles=await bundletokens.getBundleCount.call();
+      //  console.log("bundle Count:", nbundles.toNumber());
         let bundleId=nbundles.toNumber()-1;
-        await bundletokens.registerSubscriber(bundleId,{from:subscriber});
+        let nsubscribers=await bundletokens.getSubscriberCount.call(bundleId);
+       // console.log("nsubscribers:",nsubscribers.toNumber());
         await bundletokens.subscriberClaim(bundleId,{from:subscriber});
+
         let success3=await bundletokens.checkSubscriberClaim({from:subscriber});
         assert.equal(success3, true, 'Subscriber has been claimed successfully');
     });
-
 
 });

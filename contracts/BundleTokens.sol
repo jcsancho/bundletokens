@@ -437,7 +437,7 @@ function subscriberClaim(uint _bundleId)
                            }
                         }
                     }
-                }
+               }
     }
 }
 
